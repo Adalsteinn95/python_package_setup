@@ -6,19 +6,15 @@ import os.path
 from os.path import abspath, dirname, basename
 from pathlib import Path
 import shutil
-from dataclasses import dataclass
+import json
+import sys
 
 DEBUG = "OFF"
-
-@dataclass
-class Parameter:
-    name: str
-    value: str
-    description: str
 
 
 def main():
     args = parse_arguments()
+    sys.exit(1)
 
     beutified_package_path = (
         Path(abspath(args.PACKAGE_DIR).replace(os.environ["HOME"], "~"))
@@ -41,22 +37,24 @@ def main():
 def parse_arguments():
     parser = argparse.ArgumentParser()
     parser.description = (
-        "Sets up a basic Python package in PACKAGE_DIR/PACKAGE_NAME"
+        "Sets up a basic Python package in PACKAGE_DIR/PACKAGE_NAME. "
+        + "param configs through CLI overwrite param configs through --extra-configs. "
+        + "The idea is that --extra-configs should configure params that are almost "
+        + "always the same and you can use the CLI parameters to set the configs "
+        + "that are different by every project such as --project-name. "
     )
-    parser.add_argument("PYTHON_VERSION", help="Example: 3.7")
-    parser.add_argument("PACKAGE_NAME", help="Name of package")
-    parser.add_argument("GITHUB_USERNAME", help="Your username on Github")
-    parser.add_argument(
-        "PACKAGE_DIR",
-        help="The directory which the package should be created in. Example: ~",
-    )
-    parser.add_argument(
-        "--application-name",
-        help=(
-            "Main application to be run (name without extension), "
-            "defaults to 'main'"
-        ),
-    ),
+    
+    parameters = None
+    root_dir = Path(dirname(abspath(__file__)))
+    with open(root_dir / "parameter_descriptions.json", "r") as fh:
+        parameters = json.loads("".join(fh.readlines()))
+    
+    for param in parameters:
+        parser.add_argument(
+            f"--{param['name'].replace('_', '-')}",
+            help=param["description"]
+        )
+        
     arguments = parser.parse_args()
     return arguments
 

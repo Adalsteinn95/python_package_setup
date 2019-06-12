@@ -1,0 +1,25 @@
+[{
+		"name": "package_name",
+		"description": "Name of package, snake_case recommended"
+	},
+	{
+		"name": "package_name_header",
+		"description": "Name of package written using normal casing, used for example for header of REAMDE.md"
+	},
+	{
+		"name": "python_version",
+		"description": "Example: 3.7"
+	},
+	{
+		"name": "github_username",
+		"description": "Your username on github.com"
+	},
+	{
+		"name": "application_name",
+		"description": "Name of default .py file to run in your package, defaults to main.py"
+	},
+	{
+		"name": "author_name",
+		"description": "Name of author"
+	}
+]
